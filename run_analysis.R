@@ -10,16 +10,16 @@ df_subject_test <- read.table("./project/UCI HAR Dataset/test/subject_test.txt")
 # reading X_test (data)
 df_X_test <- read.table("./project/UCI HAR Dataset/test/X_test.txt")
 
-# reading y_test test data (labels)
+# reading y_test test data (activity labels)
 df_labels_test <- read.table("./project/UCI HAR Dataset/test/y_test.txt")
 
-# changing the column name from "V1" to "label" in df_labels_test before merge
-colnames(df_labels_test)[1] <- "label"
+# changing the column name from "V1" to "activity" in df_labels_test before merge
+colnames(df_labels_test)[1] <- "activity"
 
 # changing the column name from "V1" to "subject" in df_subject_test para "subject" before merge
 colnames(df_subject_test)[1] <- "subject"
 
-# merging: df_subject_test, df_label_test and df_X_test into df_s_X_test. 
+# merging: df_subject_test, df_labels_test and df_X_test into df_s_X_test. 
 df_l_s_X_test <- cbind(df_subject_test,df_labels_test,df_X_test)
 
 ################################################
@@ -31,16 +31,16 @@ df_subject_train <- read.table("./project/UCI HAR Dataset/train/subject_train.tx
 # reading X_train (data)
 df_X_train <- read.table("./project/UCI HAR Dataset/train/X_train.txt")
 
-# reading y_train train data (labels)
+# reading y_train train data (activity labels)
 df_labels_train <- read.table("./project/UCI HAR Dataset/train/y_train.txt")
 
-# changing the column name from "V1" to "label" in df_labels_train before merge
-colnames(df_labels_train)[1] <- "label"
+# changing the column name from "V1" to "activity" in df_labels_train before merge
+colnames(df_labels_train)[1] <- "activity"
 
 # changing the column name from "V1" to "subject" in df_subject_train para "subject" before merge
 colnames(df_subject_train)[1] <- "subject"
 
-# merging: df_subject_train, df-label_train e df_X_train em df_l_s_X_train. Obs. cbind muito mais rápido que merge!!
+# merging: df_subject_train, df_labels_train e df_X_train em df_l_s_X_train. Obs. cbind muito mais rápido que merge!!
 df_l_s_X_train <- cbind(df_subject_train,df_labels_train,df_X_train)
 
 # mergin both dataset (test e train) into a single one
@@ -49,7 +49,7 @@ df_total <- rbind (df_l_s_X_test,df_l_s_X_train)
 
 # Extracting only the mean e std columns (those that apear into features.txt file)
 library(dplyr) # using dplyr package
-df_mean_std <- select(df_total,subject,label,V1:V6, V41:V46,V81:V86,V121:V126,V161:V166,V201:V202,
+df_mean_std <- select(df_total,subject,activity,V1:V6, V41:V46,V81:V86,V121:V126,V161:V166,V201:V202,
                       V214:V215,V227:V228,V240:V241,V253:V254,V266:V271,V345:V350,
                       V424:V429,V503:V504,V516:V517,V529:V530,V542:V543)
 
@@ -59,18 +59,18 @@ df_mean_std <- select(df_total,subject,label,V1:V6, V41:V46,V81:V86,V121:V126,V1
 rm(df_l_s_X_test,df_l_s_X_train,df_X_test, df_X_train, df_total)
 
 
-# changing the numeric values of label variable to descriptive names
-distinct(select(df_mean_std,label))  # making sure the data.frame has only the valid activity label numbers
-df_mean_std$label <- as.character(df_mean_std$label) # transforming label from integer type to character type
-df_mean_std$label[df_mean_std$label == 1] <- "WALKING"
-df_mean_std$label[df_mean_std$label == 2] <- "WALKING_UPSTAIRS"
-df_mean_std$label[df_mean_std$label == 3] <- "WALKING_DOWNSTAIRS"
-df_mean_std$label[df_mean_std$label == 4] <- "SITTING"
-df_mean_std$label[df_mean_std$label == 5] <- "STANDING"
-df_mean_std$label[df_mean_std$label == 6] <- "LAYING"
+# changing the numeric values of activity variable to descriptive names
+distinct(select(df_mean_std,activity))  # making sure the data.frame has only the valid activity activity numbers
+df_mean_std$activity <- as.character(df_mean_std$activity) # transforming activity from integer type to character type
+df_mean_std$activity[df_mean_std$activity == 1] <- "WALKING"
+df_mean_std$activity[df_mean_std$activity == 2] <- "WALKING_UPSTAIRS"
+df_mean_std$activity[df_mean_std$activity == 3] <- "WALKING_DOWNSTAIRS"
+df_mean_std$activity[df_mean_std$activity == 4] <- "SITTING"
+df_mean_std$activity[df_mean_std$activity == 5] <- "STANDING"
+df_mean_std$activity[df_mean_std$activity == 6] <- "LAYING"
 
 # creating the consolidated dataframe, grouped the mean values by label activity and subject
-df_grouped <- group_by(df_mean_std, label, subject)
+df_grouped <- group_by(df_mean_std, activity, subject)
 df_tidy <- summarise(df_grouped,mean(V1), mean(V2),mean(V3), mean(V4),mean(V5), mean(V6),
                  mean(V41), mean(V42),mean(V43), mean(V44),mean(V45), mean(V46),
                  mean(V81), mean(V82),mean(V83), mean(V84),mean(V85), mean(V86),
@@ -197,7 +197,7 @@ write.table(df_tidy, file = "./data/tidy_project.txt",sep = ",",row.name = FALSE
 # remember that the variable names are not changed in this dataset (V1, V2, etc).
 # but as it is in the same order, it is easy to select some values and check against the data file.
 # you can import the text file to Excel to make the things easier
-# x <- df_mean_std$V2[df_mean_std$label == "WALKING" & df_mean_std$subject == 14]
+# x <- df_mean_std$V2[df_mean_std$activity == "WALKING" & df_mean_std$subject == 14]
 # mean(x)
 
 

@@ -53,10 +53,10 @@ df_labels_train <- read.table("./project/UCI HAR Dataset/train/y_train.txt")
 We will work the test data set first and repeat the steps for the train data set later.
 
 We have to merge in a single file the subject ID, activity label and the actual data, considering that all of them are in the proper order. 
-Before that, we will change the column names for the labels and subject datasets, because they are both named "V1" and this same name is used in the X-test dataset.
+Before that, we will change the column names for the activity labels and subject datasets, because they are both named "V1" and this same name is used in the X-test dataset.
 
 ```{r, eval=FALSE}
-colnames(df_labels_test)[1] <- "label"
+colnames(df_labels_test)[1] <- "activity"
 colnames(df_subject_test)[1] <- "subject"
 ```
 
@@ -70,7 +70,7 @@ Now we repeat the steps above to create the **train dataset**
 
 Changing the column names...
 ```{r, eval=FALSE}
-colnames(df_labels_train)[1] <- "label"
+colnames(df_labels_train)[1] <- "activity"
 colnames(df_subject_train)[1] <- "subject"
 ```
 Merging the train datasets...
@@ -84,7 +84,7 @@ df_total <- rbind (df_l_s_X_test,df_l_s_X_train)
 
 **STEP 2** *Extracts only the measurements on the mean and standard deviation for each measurement.*
 
-We know that the first column in the df_mean_std dataset is named "subject" , the second is named "label" and the remaining, with the actual measurement data, goes from "V1" to "V561".
+We know that the first column in the df_mean_std dataset is named "subject" , the second is named "activity" and the remaining, with the actual measurement data, goes from "V1" to "V561".
 Using the information in the file features.txt, we will select only the variables that are associated with the mean and standard deviation.
 
 Our criteria was to select all the variables that ended with the "mean" or "stdved" sufix.
@@ -92,7 +92,7 @@ Our criteria was to select all the variables that ended with the "mean" or "stdv
 To extract only the mean and standard deviation for each measurement we will use the dplyr package...
 ```{r, eval=FALSE}
 library(dplyr)
-df_mean_std <- select(df_total,subject,label,V1:V6, V41:V46,V81:V86,V121:V126,V161:V166,V201:V202,
+df_mean_std <- select(df_total,subject,activity,V1:V6, V41:V46,V81:V86,V121:V126,V161:V166,V201:V202,
                       V214:V215,V227:V228,V240:V241,V253:V254,V266:V271,V345:V350,
                       V424:V429,V503:V504,V516:V517,V529:V530,V542:V543)
 ```
@@ -108,21 +108,21 @@ rm(df_l_s_X_test,df_l_s_X_train,df_X_test, df_X_train, df_total)
 
 We then change the numeric values of the activities to their associated labels...
 ```{r, eval=FALSE}
-df_mean_std$label <- as.character(df_mean_std$label) # transforming label from integer type to character type
-df_mean_std$label[df_mean_std$label == 1] <- "WALKING"
-df_mean_std$label[df_mean_std$label == 2] <- "WALKING_UPSTAIRS"
-df_mean_std$label[df_mean_std$label == 3] <- "WALKING_DOWNSTAIRS"
-df_mean_std$label[df_mean_std$label == 4] <- "SITTING"
-df_mean_std$label[df_mean_std$label == 5] <- "STANDING"
-df_mean_std$label[df_mean_std$label == 6] <- "LAYING"
+df_mean_std$activity <- as.character(df_mean_std$activity) # transforming activity from integer type to character type
+df_mean_std$activity[df_mean_std$activity == 1] <- "WALKING"
+df_mean_std$activity[df_mean_std$activity == 2] <- "WALKING_UPSTAIRS"
+df_mean_std$activity[df_mean_std$activity == 3] <- "WALKING_DOWNSTAIRS"
+df_mean_std$activity[df_mean_std$activity == 4] <- "SITTING"
+df_mean_std$activity[df_mean_std$activity == 5] <- "STANDING"
+df_mean_std$activity[df_mean_std$activity == 6] <- "LAYING"
 ```
 
 **STEP 4** *From the data set in step 3, creates a second, independent tidy data set with the average of each variable for each activity and each subject.*
 
-In this step, we will group the data for label and subject, obtaining the mean by using dplyer package again and write the tidy file.
+In this step, we will group the data for activity and subject, obtaining the mean by using dplyer package again and write the tidy file.
 
 ```{r, eval=FALSE}
-df_grouped <- group_by(df_mean_std, label, subject)
+df_grouped <- group_by(df_mean_std, activity, subject)
 df_tidy <- summarise(df_grouped,mean(V1), mean(V2),mean(V3), mean(V4),mean(V5), mean(V6),
                  mean(V41), mean(V42),mean(V43), mean(V44),mean(V45), mean(V46),
                  mean(V81), mean(V82),mean(V83), mean(V84),mean(V85), mean(V86),
@@ -251,7 +251,7 @@ If you import the file into a Excel spreadsheet it will be more confortable to w
 # remember that the variable names are not changed in this dataset (V1, V2, etc).
 # but as it is in the same order, it is easy to select some values and check against the data file.
 # you can import the text file to Excel to make the things easier
-x <- df_mean_std$V2[df_mean_std$label == "WALKING" & df_mean_std$subject == 14]
+x <- df_mean_std$V2[df_mean_std$activity == "WALKING" & df_mean_std$subject == 14]
 mean(x)
 ```
 Thanks!!

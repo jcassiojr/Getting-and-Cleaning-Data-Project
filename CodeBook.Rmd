@@ -600,17 +600,17 @@ Angle between Z direction and mean gravity
     + description: each row identifies the subject who performed the activity for each window sample. Its range is from 1 to 30.
     + contents: subject ID
 * y_test.txt and y_train.txt
-    + description: test and train labels.
+    + description: test and train activity labels.
     + contents: activity label ID
 
 #### Processed data
 
 We will perform the following transformations, detailed explained in the README.md file:
 
-1. merging the datasets X_test, subject_test and label_test into one single file for test dataset
-2. merging the datasets X_train, subject_train and label_train into one single file for train dataset
+1. merging the datasets X_test (measurements), subject_test (subjects) and y_test (activity labels) into one single file for test dataset
+2. merging the datasets X_train (measurements), subject_train (subjects) and y_train (activity labels) into one single file for train dataset
 3. merging both datasets above into one single dataset for all the subjects (train and test)
-4. changing the activity labels to activity names
+4. changing the activity ID labels to activity names
 5. selecting only the mean and standard deviations variables to work with
 6. changing the variable names to more meningful names
 7. sumarizing the variable mean grouped by activity and subject
@@ -624,6 +624,7 @@ The description of the tidy dataset follows bellow:
     + description: text file with the mean value grouped by activity and subject, of all the variables that represent means and standard deviations from the raw datasets. 
     
     + contents: 
+activity name, subject ID,
 Mean value of body acceleration mean time on direction X,
 Mean value of body acceleration mean time on direction Y,
 Mean value of body acceleration mean time on direction Z,
